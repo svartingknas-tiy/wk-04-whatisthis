@@ -96,10 +96,10 @@ var confusing = {
 
 
 // * Problem 6
-whatIsThis.call();
+// whatIsThis.call();
 /*
-- "this" is ...
-- because ...
+- "this" is ... the window object
+- because ... name is not one of the parameters of the function.
 */
 
 
@@ -108,7 +108,7 @@ whatIsThis.call();
 // * Problem 7
 // whatIsThis.call(trickyTricky);
 /*
-- "this" is ...
+- "this" is ... not used, however, would refer to the object
 - because ...
 */
 
@@ -126,9 +126,9 @@ whatIsThis.call();
 
 
 // * Problem 9
-// whatIsThis.call(confusing);
+whatIsThis.call(confusing);
 /*
-- "this" is ...
+- "this" is ... object
 - because ...
 */
 
@@ -136,7 +136,7 @@ whatIsThis.call();
 
 
 // * Problem 10
-// whatIsThis.call(confusing, 'hello');
+whatIsThis.call(confusing, 'hello');
 /*
 - "this" is ...
 - because ...
