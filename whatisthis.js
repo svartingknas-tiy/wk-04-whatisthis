@@ -18,6 +18,8 @@ var inAnObject = {
 
 var inAFunction = function(a, b) {
 	this.name = 'Sally';
+	console.log('This inside inAFunction is...', this);
+	this.test4 = whatIsThis;
 	whatIsThis(a, b);
 };
 
@@ -48,8 +50,8 @@ var confusing = {
 // * Problem 1
  // whatIsThis('hello', 'world');
 
-// - "this" is ... function (a,b)
-// - because ... This refers to the function as it is. The value of This is  determined by how this function is called.
+// - "this" is ... the default location (window object) (function IS NOT an object, because there are no values or properties.)
+// - because ... whatIsThis is not an object, it is defined as a function. There are no objects for 'this' to refer to. so it goes to the default location.
 
 
 
@@ -68,8 +70,9 @@ var confusing = {
 // * Problem 3
 // inAnObject.test1('face', 'book');
 /*
-- "this" is ... referring to the main object inAnObject
-- because ... inAnObject is the dominating object at the moment. This will refer to the main object that the method is under.
+- "this" is ...inAnObject
+
+- because ... implicity bound to inAnObject through the call site.
 */
 
 
@@ -79,6 +82,7 @@ var confusing = {
 // inAnObject.anotherObject.test1('twitter', 'book');
 /*
 - "this" is ... referring to test 2 as there is no test 1 under anotherObject.
+
 - because ... this refers to the object in which is being utilized. this, in this case, is beig utilized to refer to anotherObject. anotherObject does not contain a test1 .
 */
 
@@ -88,8 +92,9 @@ var confusing = {
 // * Problem 5
 // inAnObject.anotherObject.test2('twitter', 'book');
 /*
-- "this" is ... ferring to anotherObject
+- "this" is ... referring to anotherObject
 - because ... anotherObject is the reining object under which this is being used.
+"implicitely bound to 'inAnObject' through the call site"
 */
 
 
@@ -100,7 +105,8 @@ var confusing = {
 /*
 - "this" is ... the window object
 - because ... name is not one of the parameters of the function.
-*/
+'because it isnt otherwise specified., therefore, uses the default binding, in this case window; since no 'a' or 'b' parameter, they're undefined. */
+
 
 
 
@@ -108,7 +114,7 @@ var confusing = {
 // * Problem 7
 // whatIsThis.call(trickyTricky);
 /*
-- "this" is ... not used, however, would refer to the object
+- "this" is ...
 - because ...
 */
 
@@ -118,28 +124,28 @@ var confusing = {
 // * Problem 8
 // whatIsThis.call(trickyTricky, 'nice', 'job');
 /*
-- "this" is ...
-- because ...
+- "this" is ... 'trickyTricky' with an a or b defined throigh .call parameters
+- because ... trickyTricky and parameters are pase through .call and therefore hard bound.
 */
 
 
 
 
 // * Problem 9
-whatIsThis.call(confusing);
+// whatIsThis.call(confusing);
 /*
-- "this" is ... object
-- because ...
+- "this" is ...confusing without an a or b defined
+- because ... confusing is passed through .call and therefore hard bound. since no a or b parameters, theypre undefined
 */
 
 
 
 
 // * Problem 10
-whatIsThis.call(confusing, 'hello');
+// whatIsThis.call(confusing, 'hello');
 /*
-- "this" is ...
-- because ...
+- "this" is ...  confusing with a defined and b undefined
+- because ... confusing and one parameter are pased throgh .call and therefore undefined.
 */
 
 
@@ -148,8 +154,8 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 11
 // whatIsThis.apply(trickyTricky);
 /*
-- "this" is ...
-- because ...
+- "this" is ... trickyTricky  without a or b defined
+- because ... trickyTricky
 */
 
 
@@ -158,8 +164,8 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 12
 // whatIsThis.apply(confusing, ['nice', 'job']);
 /*
-- "this" is ...
-- because ...
+- "this" is ...confusing with a a and b definedn through .apply parameters
+- because ... because confusing and parameters are passed through .apply and therefore hardbound --even though they are passed as an array(the array is necessary to pass additional parameters through the .apply)
 */
 
 
@@ -168,8 +174,9 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 13
 // whatIsThis.apply(confusing, 'nice', 'job');
 /*
-- "this" is ...
-- because ...
+- "this" is ...  confusing throws an error
+- because ... .apply requires to have an array of strings, even if it is only one object .
+".apply requires an array for additional parameters.(ie everything but the object being bound.)"
 */
 
 
@@ -178,8 +185,8 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 14
 // inAFunction('what will', 'happen?');
 /*
-- "this" is ...
-- because ...
+- "this" is ... referring to the window object. There are no objects under this function
+- because ... this.sally is not an object, so this refers to the window.
 */
 
 
@@ -188,8 +195,8 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 15
 // inAFunction.test3('A', 'B');
 /*
-- "this" is ...
-- because ...
+- "this" is ... an error
+- because ... 'test3' is not an option
 */
 
 
@@ -198,19 +205,18 @@ whatIsThis.call(confusing, 'hello');
 // * Problem 16
 // var newObject = new inAFunction('what will', 'happen?');
 /*
-- "this" is ...
-- because ...
+- "this" is ... window or global
+- because ... it was defaultbound to window through its call site. New doesnt apply because the function is simply called from within the new function.
 */
-
-
 
 
 // * Problem 17
 // var newObject = new inAFunction('what will', 'happen?');
+// newObject.test4('now', 'what');
 // newObject.test3('C', 'D');
 /*
-- "this" is ...
-- because ...
+- "this" is ... initially window or global, then it's 'inAFunction'
+- because ... line 212 initiall did a new bind -- the call to whatIsThison line 23  reset the bind to the default windowe
 */
 
 
@@ -220,14 +226,14 @@ whatIsThis.call(confusing, 'hello');
 // inAnObject.test1.call(trickyTricky, 'face', 'book');
 /*
 - "this" is ...
-- because ...
+- because ... trickyTricky and parameters are passed through .call and tehrefore hard bound.
 */
 
 
 
 
 // * Problem 19
-// inAnObject.anotherObject.test2.apply(confusing, ['foo', 'bar']);
+inAnObject.anotherObject.test2.apply(confusing, ['foo', 'bar']);
 /*
 - "this" is ...
 - because ...
